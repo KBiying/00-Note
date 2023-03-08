@@ -1,0 +1,4 @@
+# bullseye 编译内核
+
+rpi-source, linux源文件, Module8.symvers复制到 /home/pi目录下
+

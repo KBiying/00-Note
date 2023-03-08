@@ -1,0 +1,29 @@
+#以2020_08_20版本为例
+
+### 1.下载镜像和文档
+
+https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2020-08-24/
+
+![Screenshot_20220925_110819](/home/bailey/图片/Screenshot_20220925_110819.png)
+
+### 2. 下载东西
+
+根据文档里内核hash值下载东西
+
+![Screenshot_20220925_111026](/home/bailey/图片/Screenshot_20220925_111026.png)
+
+
+
+- 有3个用处
+
+  1、下载对应版本的内核源码，放到/home/pi路径下
+
+  https://github.com/raspberrypi/linux/archive/f2f7e4b23d8788e96f81a7522b2f703e51c53e70.tar.gz
+
+  2、下载modulde.symvers，放到/home/pi路径下
+
+  https://raw.githubusercontent.com/raspberrypi/firmware/f2f7e4b23d8788e96f81a7522b2f703e51c53e70/extra/Module7l.symvers
+
+  并将417行`download_to(kernel.symvers, os.path.join(linux_dir, "Module.symvers"))`修改为`sh("cp /home/pi/Module7l.symvers %s/Module.symvers" % linux_dir)`
+
+​		3、将271行`kernel.git_hash = download("%s/%s/extra/git_hash" % (repo_raw, fw_rev)).strip()` 修改为`kernel.git_hash = "f2f7e4b23d8788e96f81a7522b2f703e51c53e70"`

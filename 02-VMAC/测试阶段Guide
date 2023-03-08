@@ -1,0 +1,85 @@
+# 测试阶段
+
+## 1 、烧录树莓派及准备工作
+
+#### 改boot/config.txt：`dtoverlay=dwc2,dr_mode=host`
+
+#### 新建ssh空白文件、
+
+#### 换源、
+
+换成国内源（亲测是可以支持64位的源）：
+
+把/etc/apt/sources.list所有内容替换为：
+
+```c
+# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
+deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
+
+```
+
+然后在把/etc/apt/sources.list.d/raspi.list所有内容替换为：
+
+```c
+deb https://mirrors.tuna.tsinghua.edu.cn/raspberrypi/ bullseye main
+```
+
+#### 复制 test_init
+
+到路径/home/pi
+
+---
+
+
+
+#### 开机
+
+#### 下载软件
+
+`sudo apt install vim lshw`
+
+#### move kernel object
+
+`sudo cp * /usr/lib/modules/5.10.92-v8+`
+
+`sudo cp ath9k_htc `到原htc.ko所在位置
+
+更新依赖关系
+
+`sudo depmod -a`
+
+#### 禁用其中一个wifi
+
+```c
+sudo vim /etc/modprobe.d/raspi-blacklist.conf
+>> blacklist brcmfmac
+```
+
+
+
+#### swap firmware
+
+```shell
+sudo cp /home/pi/already-built-package/firmware/htc_9271-1.4.0.fw /lib/firmware/ath9k_htc
+reboot
+```
+
+#### insert modules
+
+```shell
+sudo rmmod ath9k_htc
+sudo rmmod ath9k_common
+sudo rmmod ath9k_hw
+sudo rmmod mac80211
+sudo modprobe vmac,ath9k_hw,ath9k_common,ath9k_htc
+```
+
+
+

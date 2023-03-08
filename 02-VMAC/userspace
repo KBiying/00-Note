@@ -1,0 +1,14 @@
+# usersapce
+
+报错
+
+```shell
+/usr/bin/ld: /tmp/cc0LU3vo.o:(.bss+0x0): multiple definition of `vmac_priv'; /tmp/ccQZiVfl.o:(.bss+0x0): first defined here
+collect2: error: ld returned 1 exit status
+```
+
+解决方法：
+
+修改vmac-usrsp.h： ` struct vmac_lib_priv vmac_priv;` -> `extern struct vmac_lib_priv vmac_priv;`
+
+修改vmac-usrsp.c ：添加`struct vmac_lib_priv vmac_priv;`

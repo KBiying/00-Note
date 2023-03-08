@@ -1,0 +1,42 @@
+#### 1.树莓派 W: GPG error: http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian buster InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 9165938D90FDDD2E
+
+` sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 9165938D90FDDD2E `
+
+
+
+#### 2.N: Skipping acquire of configured file 'rpi/binary-arm64/Packages' as repository 'http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian buster InRelease' doesn't support architecture 'arm64'
+
+更换源
+
+##### 2.1换成国内源（亲测是可以支持64位的源）：
+
+把/etc/apt/sources.list所有内容替换为：
+
+```
+deb http://mirrors.tuna.tsinghua.edu.cn/debian buster main contrib non-free
+deb http://mirrors.tuna.tsinghua.edu.cn/debian-security/ buster/updates main contrib non-free
+deb http://mirrors.tuna.tsinghua.edu.cn/debian buster-updates main contrib non-free
+# Uncomment deb-src lines below then \'apt-get update\' to enable \'apt-get source\'
+#deb-src http://mirrors.tuna.tsinghua.edu.cn/debian buster main contrib non-free
+#deb-src http://mirrors.tuna.tsinghua.edu.cn/debian-security/ buster/updates main contrib non-free
+#deb-src http://mirrors.tuna.tsinghua.edu.cn/debian buster-updates main contrib non-free
+```
+
+然后在把/etc/apt/sources.list.d/raspi.list所有内容替换为：
+
+```
+deb http://mirrors.tuna.tsinghua.edu.cn/raspberrypi/ buster main ui
+# Uncomment line below then \'apt-get update\' to enable \'apt-get source\'
+#deb-src http://mirrors.tuna.tsinghua.edu.cn/raspberrypi/ buster main ui
+```
+
+##### 2.2更新
+
+```
+sudo apt-get update
+```
+问题：
+ath9k_htc: module using GPL-only symbols uses symbols from proprietary module vmac.
+ath9k_htc: Unknown symbol ieee80211_free_hw (err -2)
+解决：
+修改GPL

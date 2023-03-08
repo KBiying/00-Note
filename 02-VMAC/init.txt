@@ -1,0 +1,30 @@
+config.txt中添加 dtoverlay=dwc2,dr_mode=host
+
+修改 /etc/apt/sources.list
+deb http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ buster main contrib non-free rpi
+deb-src http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ buster main contrib non-free rpi
+
+修改 /etc/apt/sources.list.d/raspi.list
+deb http://mirrors.tuna.tsinghua.edu.cn/raspberrypi/ buster main ui
+deb-src http://mirrors.tuna.tsinghua.edu.cn/raspberrypi/ buster main ui
+
+将 '树莓派init' 文件夹的内容复制进 /home/pi
+
+sudo apt update
+sudo apt install vim dkms lshw
+sudo apt install git bc bison flex libssl-dev libncurses5-dev
+
+sudo wget https://raw.yzuu.cf/RPi-Distro/rpi-source/master/rpi-source -O /usr/local/bin/rpi-source && sudo chmod +x /usr/local/bin/rpi-source && /usr/local/bin/rpi-source -q --tag-update
+sudo mv -f /home/pi/rpi-source /usr/local/bin/
+rpi-source --dest=/home/pi
+
+lshw
+sudo vim /etc/modprobe.d/raspi-blacklist.conf
+blacklist brcmfmac
+
+cp /lib/firmware/ath9k_htc/htc_9271-1.4.0.fw /home/pi/
+sudo mv -f /home/pi/already-built-package/firmware/htc_9271-1.4.0.fw /lib/firmware/ath9k_htc
+(reboot)
+
+cd /home/pi/already-built-package/kernel/pi4 && chmod 775 install.sh
+

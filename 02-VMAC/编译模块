@@ -1,0 +1,51 @@
+# 1.备份ath文件夹
+
+cp -r /lib/modules/$(uname -r)/build/drivers/net/wireless/ath /home/pi
+
+# 2.将vmac文件夹放入ath文件夹
+
+ # 3.修改函数
+
+ath9k文件夹含有`ieee80211_rx() `的函数的有两个文件
+
+/home/pi/ath/ath9k/htc_drv_txrx.c
+
+/home/pi/ath/ath9k/recv.c
+
+将`ieee80211_rx`改成 `ieee80211_rx_vmac`再引用上头文件`#include "../vmac/rx.h"`
+
+将ath9k/htc_drv_main.c文件中`ath9k_htc_get_stats`函数内容修改为
+
+```c
+	int slot;
+	struct ath9k_htc_priv *priv = hw->priv;
+	spin_lock_bh(&priv->tx.tx_lock);
+	slot = find_first_zero_bit(priv->tx.tx_slot, MAX_TX_BUF_NUM);
+	if (slot >= MAX_TX_BUF_NUM) {
+		spin_unlock_bh(&priv->tx.tx_lock);
+		return -1; /* No slots available DO NOT SEND PACKETS DOWN! */
+	}
+	spin_unlock_bh(&priv->tx.tx_lock);
+	return 0; /* slots available you may pass frame */
+```
+
+# 4.修改Makefile文档
+
+ath文件夹中的Makefile：加上vmac、注释掉除ath9k外的模块
+
+```makefile
+obj-m += vmac/
+#obj-$(CONFIG_ATH5K)		+= ath5k/
+obj-$(CONFIG_ATH9K_HW)		+= ath9k/
+#obj-$(CONFIG_CARL9170)		+= carl9170/
+#obj-$(CONFIG_ATH6KL)		+= ath6kl/
+#obj-$(CONFIG_AR5523)		+= ar5523/
+#obj-$(CONFIG_WIL6210)		+= wil6210/
+#obj-$(CONFIG_ATH10K)		+= ath10k/
+#obj-$(CONFIG_WCN36XX)		+= wcn36xx/
+#obj-$(CONFIG_ATH11K)		+= ath11k/
+
+```
+
+
+

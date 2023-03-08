@@ -1,0 +1,10 @@
+我们尝试根据您的文档运行v-mac
+
+问题：在执行install.sh后，（路径是V-MAC/already-built-package/kernel/pi4/）出现模块加载错误的问题。terminal info见figure1，dmesg如figure2
+经过排查，可能是您在编译驱动模块时所使用的内核版本与您提供的操作系统版本镜像不一致。您编译驱动模块的内核版本为4.19.97-v7l， 我们的内核版本：4.19.97-v7l+。(在此前我们已安装了4.19.97-v7l+版本的linux-kernel-headers)
+因此我们需要您驱动模块的源代码，在当下内核版本重新编译一遍，看是否有助于问题的解决。
+
+We are trying to run the v-mac project according to the doc, but we stuck in some problems now.
+After runing install.sh, there's an error while executing insmod command (The terminal info is showed in figure1, and the message of dmesg command in figure2). Through debuging, the error might be triggered by different kernel version. It means that the kernel version in which you compile the modules is different with the kernel version in the os Image the VMAC_Doc.pdf offerd.
+Modinfo command shows that the modules are compiled under 4.19.97-v7l kernel version.But our kernel version is 4.19.97-v7l+. (We've install the corresponding linux-kernel-headers before).
+And we think we need the source code of your driver modules. Then we could recomplie them in our version.Thank you very much.Yours LiHua/
