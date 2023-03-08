@@ -1,4 +1,4 @@
-# fget
+# Fgets
 
 **函数原型**
 
@@ -66,19 +66,82 @@ Since you can do it
 
 # (void *)0
 
-(void *) 表示空指针
+## void指针
+
+(void *) 表示void指针 可间接接受不同类型指针之间的转换。不到必要时候不要用，用的时候做好检查和注释	
+
+## NULL指针
+
+`#define NULL ((void *)0)`
+
+当不清楚指针要指向什么地址的时候，请将其指向NULL
 
 # 指针
 
-.比*运算符优先级高、
+.比运算符优先级高、[ ]比运算符优先级高。
 
 指向结构的指针：struct Student * stu1;
+
+argc 参数指定的是程序的参数数量（包括程序名本身），而 argv 这个指针数组指向的则是每个参数的名字（字符串）。
+
+## 指针数组
+
+```
+int *ptr[5];	//由于[]比*的优先级高，因此定义了一个可存放5个元素的数组ptr，每个元素的类型是int*（int型指针）
+```
+
+<img src="/Users/bailey/Downloads/172923ytyttb5rtbrt68zc.png.thumb.jpg.png" alt="172923ytyttb5rtbrt68zc.png.thumb.jpg" style="zoom:40%;" />
+
+```
+/*定义一个存放字符串的二维数组，并且使用二维数组指针指向这个二维数组，并遍历*/
+void test6(){
+    char *array[5] = {"FishC", "Five", "Star", "Good", "Wow"};
+    char *(*p)[5] = &array;
+    int i,j;
+    for(i=0; i<5; i++){
+        for (j=0; (*p)[i][j] != '\0'; j++){
+            printf("%c",(*p)[i][j]);
+            //也可使用指针法
+            printf("%c", (*(*p + i) + j));
+        }
+        printf("\n");
+    }
+}
+```
+
+
+
+## 数组指针
+
+```
+int (*ptr)[5] //由于（）优先级与 [] 优先级相等，因此ptr先被定义为一个指针，指向一个5个元素的数组。
+```
+
+<img src="/Users/bailey/Downloads/172918ekvsuuqz2co7qbav.png.thumb.jpg.png" alt="172918ekvsuuqz2co7qbav.png.thumb.jpg" style="zoom:44%;" />
+
+
+
+
+
+# 字符串
+
+## atoi
+
+##### atoi 函数将字符串中的表示数值的字符解析为对应的整型数值。
+
+```
+#include <stdlib.h>
+...
+int atoi(const char *str);
+```
+
+如果转换的结果超出一个整型的存放范围，那么会导致一个未定义的行为（当你的程序可能存在这种风险的时候，请使用 [strtol](http://bbs.fishc.com/thread-66397-1-1.html) 函数代替）。
 
 # 结构体
 
 函数参数：传递结构的地址
 
-函数声明：double sum(const struct funds *);   //参数是一个指针
+#### 函数声明：double sum(const struct funds *);   //参数是一个指针
 
 调用：struct funds stan;   sum(&stan); 
 
@@ -96,6 +159,144 @@ Since you can do it
 
 C语言允许把一个结构赋值给另一个结构，但是数组不能这样做。函数不仅能把结构本身作为参数传递，还能把结构作为返回值返回。
 
+
+
+⚠️结构体的名称并不指向结构地址，因此想给结构体指针赋值的时候就需要取址运算符`&`
+
+```c
+struct Book * pt;
+pt = &book;
+```
+
+- 结构体变量.成员名。
+
+- (*指针变量).成员名。
+
+- 指针变量->成员名。
+
+- ### 当一个结构体的成员为指针类型时，为这个结构体申请内存时，并不会给指针成员分配内存3
+
+  ## 结构体中定义指向自身的变量（如链表）
+
+  ```c
+  //这样编译时是会出现段错误
+  struct Test
+  {
+  	int x;
+  	int y;
+  	struct Test test;
+  }
+  ```
+
+  因为test是成员，而成员有需要它自身，而自身又是不完整的，因此没办法定义一个结构体变量
+
+  此时正确的做法是使用指针
+
+  ```c
+  struct Test
+  {
+  	int x;
+  	int y;
+  	struct Test *test;
+  }
+  ```
+
+  ## 双星号
+
+  用来传递指针的地址，可进行两层解引用。第一层解开的是指针的值（A的值B），第二层解开的是指针的值的值（B的值）
+
+  🌰：使用单链表存储图书
+
+  ❓：为什么`addBook(struct Book **library)`使用双星号？
+
+  ```c
+  #include <stdio.h>
+  #include <stdlib.h>
+      
+  struct Book
+  {
+          char title[128];
+          char author[40];
+          struct Book *next;
+  };
+          
+  void addBook(struct Book **library)
+  {
+          struct Book *book;
+          
+          book = (struct Book *)malloc(sizeof(struct Book));
+          if (book == NULL)
+          {
+                  printf("内存分配失败了!\n");
+                  exit(1);
+          }
+          
+          strcpy(book->title, "《零基础入门学习C语言》");
+          strcpy(book->author, "小甲鱼");
+          
+          *library = book;
+          book->next = NULL;
+  }
+          
+  int main(void)
+  {
+          struct Book *library = NULL;
+          
+          addBook(&library);
+          
+          return 0;
+  }
+  ```
+
+  上面代码的内存存储结构如下：
+
+  <img src="/Users/bailey/Downloads/doublepointer1.png" style="zoom:33%;" />
+
+  ```c
+  #include <stdio.h>
+  #include <stdlib.h>
+      
+  struct Book
+  {
+          char title[128];
+          char author[40];
+          struct Book *next;
+  };
+          
+  void addBook(struct Book *library)
+  {
+          struct Book *book;
+          
+          book = (struct Book *)malloc(sizeof(struct Book));
+          if (book == NULL)
+          {
+                  printf("内存分配失败了!\n");
+                  exit(1);
+          }
+          
+          strcpy(book->title, "《零基础入门学习C语言》");
+          strcpy(book->author, "小甲鱼");
+          
+          *library = book;
+          book->next = NULL;
+  }
+          
+  int main(void)
+  {
+          struct Book *library = NULL;
+          
+          addBook(library);
+          
+          return 0;
+  }
+  ```
+
+  <img src="/Users/bailey/Downloads/doublepointer2.png" style="zoom:33%;" />
+
+  
+
+  addBook(library) 传递的是 library 指针的值，也就是把 NULL 传过去了；而 addBook(&library) 传递的是 library 指针的地址，自然，传过去的是指针的地址，那么要接住它就必须使用指向指针的指针（两个星号）啦~
+
 # const
 
 由于被调函数中的某些操作可能会意外影响原来结构中的数据。ANSI C新增的const限定符解决了这个问题。
@@ -105,6 +306,78 @@ C语言允许把一个结构赋值给另一个结构，但是数组不能这样�
 # fseek
 
 # 内存分配
+
+### malloc && free
+
+`void *malloc(size_t size);`
+
+`void free (void *ptr);`
+
+申请不成功会返回NULL
+
+malloc不会帮忙初始化，要配合使用memset进行初始化
+
+`void *memset(void *str, int c, size_t n)`
+
+用例：
+
+```c
+//use case
+int *ptr = (int *)malloc(8*sizeof(int));
+memset(ptr, 0, 8*sizeof(int));
+```
+
+### calloc
+
+相较于malloc，calloc在内存中动态地申请nmemb个长度为size的连续内存空间（总空间尺寸为nmemb * size）， 这些内存空间全部被初始化为0。
+
+```c
+//use case
+int *ptr = (int *)calloc(8*sizeof(int));
+```
+
+### memcpy && realloc
+
+**函数原型**
+
+`void *memcpy(void*dest, const void *src, size_t n);`
+
+**功能**
+
+由src指向地址为起始地址的连续n个字节的数据复制到以destin指向地址为起始地址的空间内。
+
+**头文件**
+
+`#include<string.h>`
+
+返回值
+
+　　函数返回一个指向dest的指针。
+`void *realloc(void *ptr, size_t size)`
+
+功能
+
+修改ptr指向的内存空间大小为size字节，移动内存空间的数据并返回新的指针
+
+局部变量在栈中，
+
+##### 导致内存泄漏主要两种情况：
+
+1/隐式内存泄漏（即用完内存快没有及时使用free函数释放）
+
+2/丢失内存块地址
+
+## 内存布局
+
+代码段
+
+数据段：通常用来存放已经初始化的全局变量和局部静态变量
+
+BSS段（Block Started by Symbol）：通常用来存放程序中未初始化的全局变量的一块内存区域。
+
+
+
+堆内存是由程序员手动申请的，栈内存是自动分配的。
 
 # segmentation fault
 
@@ -238,14 +511,12 @@ union data{
 
 学生教师信息表
 
-
-
-| Name    | Num | Sex | Profession | Score/Course |
-| ------- | --- | --- | ---------- | ------------ |
-| David   | 30  | m   | s          | 89.6         |
-| Lisa    | 24  | f   | t          | English      |
-| Jackson | 1   | m   | t          | Math         |
-| Bailey  | 22  | f   | s          | 100          |
+| Name    | Num  | Sex  | Profession | Score/Course |
+| ------- | ---- | ---- | ---------- | ------------ |
+| David   | 30   | m    | s          | 89.6         |
+| Lisa    | 24   | f    | t          | English      |
+| Jackson | 1    | m    | t          | Math         |
+| Bailey  | 22   | f    | s          | 100          |
 
 除了最后一个变量不同，其他都一样。因此可定义结构体如下
 
@@ -280,3 +551,22 @@ int main(){
     //输出成员信息
 }
 ```
+
+
+
+# size_t
+
+**size_t** 是一些C/C++标准在stddef.h中定义的，size_t 类型表示C中任何对象所能达到的最大长度，它是无符号整数。
+
+它是为了方便系统之间的移植而定义的，不同的系统上，定义size_t 可能不一样。size_t在32位系统上定义为 unsigned int，也就是32位无符号整型。在64位系统上定义为 unsigned long ，也就是64位无符号整形。size_t 的目的是提供一种可移植的方法来声明与系统中可寻址的内存区域一致的长度。
+
+# 宏定义
+
+在宏定义的时候，宏的名字和参数列表之间不能有空格，否则会被当做是无参数的宏定义。
+
+```
+//错误举例
+#define MAX (x, y) (((x) > (y)) ? (x) : (y))
+```
+
+### 
