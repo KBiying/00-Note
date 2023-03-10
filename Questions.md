@@ -323,6 +323,10 @@ void request_DACK(u64 enc, u16 round)
 
 `list_add_tail()`是linux内核双向链表`list_head`的拓展接口，作用：从链表尾处向前添加节点的接口
 
+ request_DACK+0x64/0xc0 [vmac] 0x64是函数开始位置的偏移
+
+
+
 ## 4、rmmod ath9k_htc后卡住
 
 因为vmac模块很多处调用了while(1)，程序没办法终止，且一直在调用ath9k_htc模块，因此rmmod会出现问题  

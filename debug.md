@@ -27,10 +27,17 @@
 
 ## 启动GDB
 
-
-
-
-
 编译出带有调试信息的内核模块，有两种方法，一种是编译模块的时候加一句话，另一个方法就是修改内核xonfig然后重新编译内核
 
 问题是，我要gdb干什么，我想排除一下死锁问题，以及追踪一下ath9k走过哪些函数
+
+
+
+问题就是死锁，现在转变为，如何找到是哪个线程死锁，并定位到哪个锁。还有个问题是，ath9k_htc的锁还是vmac的锁
+
+
+
+sudo cat /sys/module/vmac/sections/.init.text
+0xffffffc008fdd000
+sudo cat /sys/module/ath9k_htc/sections/.init.text
+0xffffffc00906a000
