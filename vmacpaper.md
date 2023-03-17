@@ -48,6 +48,10 @@ producer
 
 ### 3、“The ICN layer may need to send out Interests periodically to discover nearby data.”
 
+
+
+
+
 # 实验点
 
 ### 1、分包测试
@@ -61,6 +65,10 @@ producer
 ### 3、打印b_seq 是什么
 
 #### 4、consumer发送名字不同的数据包，producer发送不同名字的数据包
+
+### 5、producer拥有两个资源
+
+
 
 # A.Design
 
