@@ -332,3 +332,93 @@ void request_DACK(u64 enc, u16 round)
 因为vmac模块很多处调用了while(1)，程序没办法终止，且一直在调用ath9k_htc模块，因此rmmod会出现问题  
 
 吗
+
+
+
+
+
+
+
+
+
+
+
+
+
+[你好，这是必应。我为你的查询“rcu_preempt self-detected stall on CPU”找到了一些结果。rcu_preempt是一个内核配置选项，用于在可抢占的内核中实现RCU（读-复制-更新）机制](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)[1](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)[。RCU是一种同步机制，用于允许多个读者和少数写者并发访问共享数据结构，而不需要锁](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)[1](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)。
+
+[当RCU检测到某个CPU或任务长时间没有响应RCU回调函数时，就会报告一个CPU停滞（stall）的错误](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)[1](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)。这可能是由于以下原因之一：
+
+- [有一个实时进程占用了所有CPU资源，并且由于其实时调度优先级，系统没有足够的资源来执行其他任务](https://unix.stackexchange.com/questions/252045/rcu-preempt-detected-stalls-on-cpus-tasks-message-appears-to-continue)[2](https://unix.stackexchange.com/questions/252045/rcu-preempt-detected-stalls-on-cpus-tasks-message-appears-to-continue)。
+- [有一个用户空间进程或驱动程序阻止了中断或抢占，导致RCU无法完成宽限期](https://stackoverflow.com/questions/35401317/rcu-preempt-self-detected-stall-on-cpu-0)[3](https://stackoverflow.com/questions/35401317/rcu-preempt-self-detected-stall-on-cpu-0)。
+- [系统过载或负载不均衡，导致某些CPU无法及时处理RCU回调函数](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)[1](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)。
+
+解决这个问题的思路可能有以下几种：
+
+- [禁用CONFIG_PREEMPT_RCU配置选项（但这需要重新编译内核），这样RCU读取段就不会被用户空间进程抢占](https://stackoverflow.com/questions/35401317/rcu-preempt-self-detected-stall-on-cpu-0)[3](https://stackoverflow.com/questions/35401317/rcu-preempt-self-detected-stall-on-cpu-0)。
+- [调整实时进程的优先级或时间片长度，使其不要长时间霸占CPU资源](https://unix.stackexchange.com/questions/252045/rcu-preempt-detected-stalls-on-cpus-tasks-message-appears-to-continue)[2](https://unix.stackexchange.com/questions/252045/rcu-preempt-detected-stalls-on-cpus-tasks-message-appears-to-continue)。
+- [检查用户空间进程或驱动程序是否存在死锁、死循环、内存泄漏等问题，导致阻塞中断或抢占](https://stackoverflow.com/questions/35401317/rcu-preempt-self-detected-stall-on-cpu-0)[3](https://stackoverflow.com/questions/35401317/rcu-preempt-self-detected-stall-on-cpu-0)[1](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)。
+- [使用sysfs或boot-time参数来禁用或调整RCU的CPU停滞检测器的行为](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)[1](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)。
+
+```
+ Call trace:
+  dev_watchdog+0x3a0/0x3a8
+  call_timer_fn+0x38/0x200
+  run_timer_softirq+0x298/0x548
+  __do_softirq+0x1a8/0x510
+  irq_exit+0xe8/0x108
+  __handle_domain_irq+0xa0/0x110
+  gic_handle_irq+0xb0/0xf0
+  el1_irq+0xcc/0x180
+  arch_cpu_idle+0x18/0x28
+  default_idle_call+0x58/0x1d4
+  do_idle+0x25c/0x270
+  cpu_startup_entry+0x30/0x70
+  secondary_start_kernel+0x168/0x178
+ ---[ end trace f3e30a4dfa5833b8 ]---
+ rcu: INFO: rcu_preempt self-detected stall on CPU
+ rcu:     0-....: (1 GPs behind) idle=49e/1/0x4000000000000004 softirq=23529/23530 fqs=2562 
+     (t=5250 jiffies g=27585 q=7601)
+ Task dump for CPU 0:
+ task:DACKGEN         state:R  running task     stack:    0 pid:  312 ppid:     2 flags:0x0000002a
+ Call trace:
+  dump_backtrace+0x0/0x1b8
+  show_stack+0x20/0x30
+  sched_show_task+0x16c/0x190
+  dump_cpu_task+0x4c/0x5c
+  rcu_dump_cpu_stacks+0xb8/0xf8
+  rcu_sched_clock_irq+0xa04/0xd18
+  update_process_times+0x68/0xe0
+  tick_sched_handle.isra.19+0x48/0x60
+  tick_sched_timer+0x60/0xb8
+  __hrtimer_run_queues+0x11c/0x470
+  hrtimer_interrupt+0xfc/0x258
+  arch_timer_handler_phys+0x38/0x48
+  handle_percpu_devid_irq+0xa8/0x2a0
+  generic_handle_irq+0x38/0x50
+  __handle_domain_irq+0x9c/0x110
+  gic_handle_irq+0xb0/0xf0
+  el1_irq+0xcc/0x180
+  queued_spin_lock_slowpath+0x1f0/0x400
+  _raw_spin_lock+0x74/0x78
+  request_DACK+0x64/0xa0 [vmac]
+  vmac_rx+0x3a0/0x5a0 [vmac]
+  ieee80211_rx_vmac+0xe8/0x110 [vmac]
+  ath9k_rx_tasklet+0xf0/0x1c0 [ath9k_htc]
+  tasklet_action_common.isra.20+0x15c/0x1a0
+  tasklet_action+0x40/0x50
+  __do_softirq+0x1a8/0x510
+  irq_exit+0xe8/0x108
+  __handle_domain_irq+0xa0/0x110
+  gic_handle_irq+0xb0/0xf0
+  el1_irq+0xcc/0x180
+  dackgen+0x70/0xb0 [vmac]
+  kthread+0x148/0x158
+  ret_from_fork+0x10/0x30
+```
+
+
+
+这段dmesg显示了一个内核调用栈信息，它显示了在某个时刻内核中正在执行的函数调用序列。从这个调用栈中，我们可以看到一些有关内核状态的信息。例如，我们可以看到这个调用栈涉及到了 `vmac` 模块的 `request_DACK` 和 `vmac_rx` 函数，以及 `ath9k_htc` 模块的 `ath9k_rx_tasklet` 函数。
+
+此外，这段dmesg还显示了一个RCU自检测到的CPU停滞问题。RCU（Read-Copy-Update）是一种同步机制，它能够让多个读者和一个写者并发地访问数据结构。当RCU检测到CPU停滞时，它会输出一些诊断信息来帮助开发人员定位问题。
