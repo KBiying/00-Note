@@ -137,6 +137,19 @@ int atoi(const char *str);
 
 如果转换的结果超出一个整型的存放范围，那么会导致一个未定义的行为（当你的程序可能存在这种风险的时候，请使用 [strtol](http://bbs.fishc.com/thread-66397-1-1.html) 函数代替）。
 
+## 字符串赋值
+
+[C语言：字符串内容的修改_c语言修改字符串_](https://blog.csdn.net/qq_31347869/article/details/105877116)
+
+`char str[] = "We are happy.";` 和 `char* sp = "We are happy.";` 创建的字符串有什么不同
+
+> 结论
+>
+> - `char* sp = "We are happy."` 无法修改字符串内容，因为这个字符串存放在内存的常量区
+> - `char str[] = "We are happy."`可以修改字符串内容，因为这个字符串是存放在栈中的
+
+
+
 # 结构体
 
 函数参数：传递结构的地址
