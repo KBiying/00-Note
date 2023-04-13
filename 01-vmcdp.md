@@ -18,16 +18,45 @@ Model parallel training is another popular distributed training paradigm. Our cu
 
 #### Why ndn?
 
-#### B. what about we transmit a wrong data?
+#### C. what about we transmit a wrong data?
 
+数据的完整性
 
+### D. Strategy
+
+强化学习 需要隔一段时间去迭代,**需要时间参数**每次迭代完成后,会生成相应的梯度和参数,这些数据RL中是矩阵的形式存在,但是为了方便传输,可以转化为向量形式.
+
+另外,有一个虚拟总控制,来规定哪个"好学生"带哪些"坏学生".(1-n).**可以设计为不同的组.**每个需要加强训练的智能体如何知道自己不够好,以及需要接收的数据是什么? 在RL层面就由全局变量[0,1,0,1,1]来规定,哪些智能体还需要训练.在网络传输方面
+
+- They are assigned to mobile devices based on the availability of resources and features of the data available to the mobile device. 他们根据 资源利用率和可用数据的特征 分配数据给边缘设备
+  - 那就是说我们同时需要考虑边缘设备的资源？还是说一开始就已经固定哪个边缘设备要做什么task？然后永久不变？或是说，一开始根据边缘设备能力去分配task？然后一直保持固定任务不变？
+
+- They are used to build evolving data mining models and consult mining agents for a final collaborative decision when required by one or more users. 
+  - 当被多个agent请求数据的时候， 建立data mining agent 模型以及咨询mining agent最后的决策
 
 ### Experiment
 
 1. How far and how fast can our vmac transmit data.
-
 2. Compare: IEEE802.11a multicast, adhoc
 3. Metric that indicate the advantage of our scheme. e.g. we can evaluate the average bit rate of cumulative distribution of all agents.
+
+
+
+### Task1--coding
+
+1. 实现使用netlink传输文件中的结构体
+
+2. 结构体数据包含时间,向量,控制组
+
+3. vmac里面有control结构体,以及seq
+
+### Task2--Hardware
+
+1. nano安装操作系统
+
+2. run vamc
+
+3. config rl env & run rl modules
 
 
 
