@@ -1,5 +1,9 @@
  
 
+> Q1:
+>
+> 
+
 内核空间使用了一个消息结构`msghdr`用来存放所有的数据结构,其原型如下：
 
 ```c
@@ -51,3 +55,10 @@ nlmsg_flags：
 #define NLM_F_DUMP_FILTERED    0x20    /* Dump was filtered as requested */
 ```
 
+Netlink优势:
+
+A.使用netlink套接字的时候不需要轮询
+
+B.内核可以向用户空间发送异步消息,不需要用户及空间来触发
+
+C.Netlink支持组播传输
