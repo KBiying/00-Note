@@ -337,14 +337,6 @@ void request_DACK(u64 enc, u16 round)
 
 
 
-
-
-
-
-
-
-
-
 [你好，这是必应。我为你的查询“rcu_preempt self-detected stall on CPU”找到了一些结果。rcu_preempt是一个内核配置选项，用于在可抢占的内核中实现RCU（读-复制-更新）机制](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)[1](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)[。RCU是一种同步机制，用于允许多个读者和少数写者并发访问共享数据结构，而不需要锁](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)[1](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)。
 
 [当RCU检测到某个CPU或任务长时间没有响应RCU回调函数时，就会报告一个CPU停滞（stall）的错误](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)[1](https://www.kernel.org/doc/html/latest/RCU/stallwarn.html)。这可能是由于以下原因之一：
