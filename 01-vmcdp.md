@@ -22,7 +22,7 @@ Model parallel training is another popular distributed training paradigm. Our cu
 
 **agent个数动态变化（2）：**
 
-*如何更新reward表？*
+*如何更新reward表？* 最长匹配进行查询。
 
 *设计点是什么：对比于传统广播的传输效率*
 
