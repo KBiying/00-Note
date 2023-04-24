@@ -120,10 +120,6 @@ gdb-multiarch /home/bailey/vmlinux
 
 remote 
 
-
-
-
-
 树莓派开机后，再插上jlink
 
 

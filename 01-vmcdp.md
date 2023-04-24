@@ -46,15 +46,77 @@ Model parallel training is another popular distributed training paradigm. Our cu
 - They are used to build evolving data mining models and consult mining agents for a final collaborative decision when required by one or more users. 
   - 当被多个agent请求数据的时候， 建立data mining agent 模型以及咨询mining agent最后的决策
 
-  
+
+#### E. 
+
+**strategy network:** 
+
+Each agent broadcast request of reward and then update reward table. The time for update is 10 seconds. The prerequisite of broadcast is fixed, about 200 steps after the moving of player
+
+According to the reward table, they **decide** which agent to learn from. And then send the request of data to the given agent.
+
+The decision is random.(二项分布生成)
+
+#### naming:
+
+先假设每个node都有自己唯一特定的node-id，each node发送name为 “/reward” 的*interest package*
+
+收到reward类型的node，返回name为“/reward/node-id”的*data package.*
+
+更新reward表的时间为10秒（这么秒数暂定）<这个过程就可以知道这个网里有哪些node>
+
+根据reward表，随机选择要学习的对象，发送name为"/data/destination-node-id/source-id"的*interest package*
+
+node收到含有自己名称且含有data请求的interest包后，返回name为“/data/destination-name/source-name”的*data package*。
+
+#### IMPLEMENTATION:
+
+#### **userspace**
+
+- **struct reward**
+  - workerID int
+  - reward number int
+
+- **registeID()**
+  - 为该node节点分配id
+- **process()**
+  - 处理vmac层传来的数据
+  - 如果是interest帧,如果是data帧
+- **recvfromVmac()**
+  - 接收从vmac层传来的数据包
+- **sendtoVmac()**
+  - 发送数据包给vmac
+- **addToRewardTable()**
+  - 向reward表中填写数据
+  - reward表是一个链表
+
+- **delFromRewardTable()**
+  - 从reward表中删除数据
+- **iterationTime()**
+  - 迭代计时器
+- **getData()**
+  - 读写文件获取训练数据
+
+#### **vmac层**
+
+- **recv()**
+  - 接收帧,并按照规则过滤帧
+- send()
+  - 封装帧,发送数据
+
+ATTENTION:开线程并行
+
+##### register server：
+
+为了动态加入节点，且保证节点id的唯一性
+
+> 如何做到非常有效的[分布式执行](https://www.zhihu.com/search?q=分布式执行&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A1055207335})（decentralized execution），训练的时候可以任意作弊（centralized training），可以用全信息，可以知道其它agent的内部状态，可以知道其它agent的行动目的，等等；但在测试的时候，我们希望每个agent只用自己所见进行决策，同时还能相互配合着完成任务。这是目前一个比较火的方向。如果是走这个方向。我们就需要加一个
 
 ### Experiment
 
 1. How far and how fast can our vmac transmit data.
 2. Compare: IEEE802.11a multicast, adhoc
 3. Metric that indicate the advantage of our scheme. e.g. we can evaluate the average bit rate of cumulative distribution of all agents.
-
-
 
 ### Task1--coding
 
@@ -74,5 +136,36 @@ Model parallel training is another popular distributed training paradigm. Our cu
 
 
 
+### 应用场景
 
+机器人足球比赛，交通灯控制，多机器人走迷宫
+
+# Multi-Agent Reinforcement Learning
+
+## Setting
+
+> 多智能体强化学习通常有四种设定
+>
+> - **Fully cooperative**
+>   **完全合作关系，这种设定里面，Agents的利益一致，获得的奖励相同，有共同的目标.**
+> - Fully competitive
+>   完全竞争关系，一方的收益是另一方的损失。典型的代表就是0和博弈，双方获得的奖励的总和为0.
+> - Mixed Cooperative & competitive
+>   既有竞争也有合作。例如：足球机器人踢球，两支球队，一方获得的奖励就是另一方的损失，但是球队内部成员是合作关系。
+> - Self-interested
+>   利己主义。系统中有多个Agents，一个Agent的动作会改变环境的状态，可能让别人受益或者受损。每个Agent只想最大化自身利益，至于让别人受损还是受益它不管。
+
+## Architectures
+
+> - Fully decentralized(去中心化)：
+>
+>   每个Agent都是独立的个体， 每个Agent独立和环境交互，并且用自己的观测和奖励来更新自己的策略。Agent彼此之间不通信，不和环境交流。前面我们介绍了去中心化，并且分析了缺点。
+>
+> - Fully centralized(完全中心化)：
+>
+>   所有Agent都把信息传送给中央控制器，中央控制器知道所有Agent的观测、动作以及奖励。Agent上没有策略网络，Agent自己不做决策，决策都是由中央控制器做的，Agent只是执行。
+>
+> - Centralized training with decentralized execution(中心化训练，去中心化执行)：
+>
+>   Agent各自有各自的策略网络，训练的时候有一个中央控制器，这个中央控制器会收集所有Agent的观测，动作以及奖励。中央控制器帮助Agent训练策略网络。训练结束之后就不再用中央控制器了，每个Agent根据自己的观测用自己的策略网络来做决策，不需要跟中央控制器通信。
 
