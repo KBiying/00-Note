@@ -40,3 +40,16 @@ ssh -T git@git.snrc.site
 
 ssh-agent -s
 ssh-add ~/.ssh/id_rsa_gops 操作这两步。
+
+# 执行ssh-add时出现Could not open a connection to your authentication agent
+
+在执行 ssh-add ~/.ssh/id_ras 时发生此错，
+
+执行如下命令　ssh-agent bash
+然后再执行 ssh-add ~/.ssh/id_ras 即可。
+
+
+
+# git 换远程仓库连接
+
+git remote set-url origin git@git.snrc.site:ICN-QUIC/AR9271-Firmware.git
