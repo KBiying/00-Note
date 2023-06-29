@@ -169,3 +169,82 @@ ATTENTION:开线程并行
 >
 >   Agent各自有各自的策略网络，训练的时候有一个中央控制器，这个中央控制器会收集所有Agent的观测，动作以及奖励。中央控制器帮助Agent训练策略网络。训练结束之后就不再用中央控制器了，每个Agent根据自己的观测用自己的策略网络来做决策，不需要跟中央控制器通信。
 
+大背景
+
+technical intro：强化学习
+
+1.提高学习精确度
+
+2.并降低每个设备的能耗
+
+通过share信息互通，更好地训练模型。
+
+为什么需要多播而不是广播？因为多样性，部分子集需要需求。
+
+网络延迟是否需要考虑？传输时间，delay
+
+与传统多播相比，我们的多播的优势？我们不需要加入多播组enter access；
+
+广播阶段+多播阶段
+
+传输内容：最大4KB 60000*64bit
+
+分组？每一次都选择新一组
+
+文章writing重点：
+
+实验
+
+1.纯广播（两个阶段都用广播）需要多少时间，浪费多少时间。
+
+2.vmac experience有限和无线和NDN simulation。NDN有线协议和无线协议模拟
+
+
+
+ #  强化学习peer to peer multi agent learning
+
+> 
+> Peer-to-peer multi-agent learning in the context of reinforcement learning refers to a scenario where multiple agents interact and learn from each other in a decentralized manner, without relying on a central authority or global coordination.
+>
+> In traditional reinforcement learning, there is typically a single agent that interacts with an environment and learns from the feedback received. However, in peer-to-peer multi-agent learning, there are multiple agents, and each agent acts as both a learner and a decision-maker. These agents interact with the environment, receive feedback, and also learn from the experiences of other agents.
+>
+> In this setting, agents can communicate and share information with each other to improve their learning and decision-making processes. This communication can occur directly between agents or indirectly through a shared environment. Agents can exchange learned policies, value functions, or other relevant information to enhance their individual learning processes.
+>
+> The key motivations and benefits of peer-to-peer multi-agent learning in reinforcement learning include:
+>
+> 1. Distributed Knowledge: Agents can leverage the collective knowledge and experiences of other agents to improve their learning. By learning from each other, agents can discover better policies or strategies that may be difficult to find individually.
+> 2. Exploration and Exploitation: Peer-to-peer multi-agent learning allows agents to explore a wider range of actions and strategies. Agents can learn from each other's exploratory behaviors and collectively exploit the knowledge gained from various experiences.
+> 3. Robustness and Adaptability: Agents in a peer-to-peer learning system can adapt to changes or perturbations more effectively. If one agent fails or encounters a new situation, other agents can provide guidance or knowledge to help adapt and overcome challenges.
+> 4. Scalability: Peer-to-peer multi-agent learning can scale well to large and complex environments. Agents can collaborate and learn in parallel, enabling efficient learning in settings with a high number of agents or a large state and action space.
+>
+> It's worth noting that peer-to-peer multi-agent learning introduces additional challenges such as coordination, communication, and stability. Designing effective communication protocols, managing exploration and exploitation trade-offs, and ensuring convergence are important considerations in developing successful peer-to-peer multi-agent learning algorithms and systems.
+>
+> 在强化学习中，点对点多智能体学习（Peer-to-peer multi-agent learning）是指多个智能体以去中心化的方式相互交互和学习的场景，而无需依赖中央控制机构或全局协调。
+>
+> 在传统的强化学习中，通常只有一个智能体与环境进行交互，并从接收到的反馈中学习。然而，在点对点多智能体学习中，存在多个智能体，每个智能体同时充当学习者和决策者的角色。这些智能体与环境交互，接收反馈，并且还从其他智能体的经验中学习。
+>
+> 在这种设置下，智能体可以相互通信和共享信息，以改进它们的学习和决策过程。这种通信可以直接在智能体之间进行，也可以通过共享的环境间接进行。智能体可以交换学习到的策略、值函数或其他相关信息，以增强各自的学习过程。
+>
+> 点对点多智能体学习在强化学习中的关键动机和优势包括：
+>
+> 1. 分布式知识：智能体可以利用其他智能体的集体知识和经验来改进学习。通过相互学习，智能体可以发现更好的策略或战略，这些可能在个体学习中很难获得。
+> 2. 探索与利用：点对点多智能体学习使智能体能够探索更广泛的行动和策略。智能体可以从彼此的探索行为中学习，并从各种经验中共同利用所获得的知识。
+> 3. 鲁棒性和适应性：点对点学习系统中的智能体可以更有效地适应变化或干扰。如果一个智能体失败或遇到新情况，其他智能体可以提供指导或知识，帮助适应并克服挑战。
+> 4. 可扩展性：点对点多智能体学习可以适用于大型和复杂的环境。智能体可以并行协作和学习，在智能体数量众多或状态和动作空间庞大的情况下实现高效学习。
+>
+> 需要注意的是，点对点多智能体学习也带来了额外的挑战，如协调、通信和稳定性。设计有效的通信协议，管理探索与利用的权衡，确保收敛性是开发成功的点对点多智能体学
+
+##  关于点对点多智能体学习之间的通信协议或通信规则怎么设计
+
+> 点对点多智能体学习中的通信协议或通信规则的设计是一项重要且具有挑战性的任务。下面是一些设计这些通信方案时需要考虑的关键因素：
+>
+> 1. 信息共享：确定智能体之间需要共享哪些信息，如经验、策略、价值函数等。这些信息的共享可以通过消息传递、共享内存或其他形式实现。
+> 2. 通信拓扑：确定智能体之间的通信拓扑结构，即哪些智能体可以直接通信，哪些需要经过中间代理或路由器进行通信。可以选择全互联（fully connected）、局部邻居（local neighbors）或者其他特定的拓扑结构。
+> 3. 通信频率：确定智能体之间的通信频率，即多久发送一次通信或更新信息。频率的选择需要权衡通信开销和信息同步的速度。
+> 4. 信息格式：定义信息的格式和编码方式，以确保不同智能体之间的信息交流是准确、一致和可解释的。常见的格式可以是向量、矩阵、JSON等。
+> 5. 协议同步：确保智能体之间的通信和信息同步是有序和一致的。可以使用同步协议来确保消息的顺序和一致性，例如时间步同步、事件触发同步等。
+> 6. 通信安全性：考虑智能体之间的通信安全性，防止信息被篡改、泄露或伪造。可以使用加密、身份验证和数字签名等安全机制来保护通信。
+> 7. 可扩展性：设计通信协议时需要考虑系统的可扩展性，以支持大规模的多智能体系统。通信方案应该能够适应增加或减少智能体数量的变化。
+>
+> 设计通信协议时需要结合具体的应用场景和问题要求。可以通过模拟、实验和调整来优化通信协议，以提高系统性能和学习效果。此外，还可以参考已有的研究成果和通信协议的最佳实践，以获得更好的设计思路和指导。
+

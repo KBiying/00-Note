@@ -4,7 +4,7 @@
 
 #### // 改boot/config.txt：`dtoverlay=dwc2,dr_mode=host`
 
-#### 新建ssh空白文件、
+#### 配置ssh使用命令raspi-config
 
 #### 换源、
 
@@ -15,13 +15,13 @@
 ```c
 # 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
 deb https://mirrors.sustech.edu.cn/debian/ bullseye main contrib non-free
-# deb-src https://mirrors.sustech.edu.cn/debian/ bullseye main contrib non-free
+
 deb https://mirrors.sustech.edu.cn/debian/ bullseye-updates main contrib non-free
-# deb-src https://mirrors.sustech.edu.cn/debian/ bullseye-updates main contrib non-free
+
 deb https://mirrors.sustech.edu.cn/debian/ bullseye-backports main contrib non-free
-# deb-src https://mirrors.sustech.edu.cn/debian/ bullseye-backports main contrib non-free
+
 deb https://mirrors.sustech.edu.cn/debian-security bullseye-security main contrib non-free
-# deb-src https://mirrors.sustech.edu.cn/debian-security bullseye-security main contrib non-free
+
 
 ```
 
