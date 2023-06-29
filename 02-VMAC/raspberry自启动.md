@@ -6,13 +6,12 @@ cd /home/pi
 python3 test.py
 ```
 
-
 2、给脚本文件添加执行权限
     `sudo chmod 777 hh.sh`
 3、向rc.local文件添加启动代码
     `sudo nano /etc/rc.local`
 4、在打开的文本中找到exit 0，在此之前添加的代码在启动时都会被执行，在exit 0 之前添加一行代码：
-      `su pi -c "exec /home/pi/Desktop/demo/pytorch-expression-detection/hh.sh"`
+      `su pi -c "exec /home/pi/Desktop/demo/pytorch-expression-detection/hh.sh`
 
 ​    ctrl+o保存，ctrl+x退出，然后在终端输入：sudo reboot ,重启系统测试。
 ​    su命令是指定在pi用户下执行这条命令，-c 表示执行完这条命令之后恢复原来的用户。
