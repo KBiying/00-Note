@@ -1,0 +1,55 @@
+1. The key strengths of this paper are: (i) an architecture for ERL in edge networks, (ii) design of a new edge multicast protocol, that includes a naming scheme along with a transport protocol.
+
+   However, although the idea is interesting, it is missing a compelling real world app. The paper would be much stronger if there was an application to accompany the protocol.
+
+   我们做的就是real world 应用，意思是做一个功能完善的app？
+
+   Consequently one of the biggest weaknesses of the paper is its evaluation. Acrobot and Cartpole are good control games, but do not represent the likely deployment scenario.
+
+   实验本就是有局限性， 如何做到普适性？
+
+   The fixed retransmission mechanism has a fixed number of transmissions to ensure data integrity. A more dynamic system could help improve the system's efficiency and reliability.
+
+   重传机制需要更加完善， 这我知道。
+
+   The paper also doesn't discuss dynamic group membership, or the scalability or **robustness of the proposed approach.**
+
+   不需要dynamic group membership咧，没看论文？ scalability or robustness 我怎么说好呢？ 任何的强化学习的参数我都能传咧， robustness 确实不太好，重传很简单，没有cs， 没有checksum。
+
+
+
+Designing custom network protocols to accelerate machine learning is quite interesting nowadays given how important ML workloads are proving to be.
+
+However, the scenario in this paper seems very contrived to me:
+
+1. What are some natural problems for which edge devices would have to perform reinforcement learning?
+2. Why not collect the data and act (if necessary) on the edge, but do the learning itself in the cloud?
+3. Is the bottleneck in this whole process the communication layer? I would expect it to be in computation, given RL is often one of the most computationally demanding forms of ML.
+
+The paper doesn't provide the above motivation. Correspondingly the evaluation section is very weak, with measurements on two toy-like examples (from what I understand). The gain of roughly 35% over basic multi-cast makes me question the need for the network-level solution.
+
+有提升就很不错了，还想要多少
+
+If you have good answers to the above questions, and your evaluation shows serious e.g. over 2-3x end-to-end improvements in settings of actual value, this paper could be of interest.
+
+1. When dealing with a large number of edge devices or more complex learning tasks, the scalability of the system may be limited, which may affect its efficiency and performance in these scenarios.
+
+这个large number of edge devices怎么做实验好呢， 怎么用仿真做呢
+
+1. This paper focuses on training and analysis for two specific games (Acrobot and CartPole), which may not be representative of a wider range of reinforcement learning problems and real-world applications.
+
+​	有没有更具有广泛性的ERL场景？
+
+1. Whether the inheritance reinforcement learning in edge environment proposed in this paper is only suitable for DQN? adding more other reinforcement learning models would be more convincing.
+
+   我们是定制的， 报好意思。怎么抽象呢？
+
+2. Further refinement of the naming scheme is recommended to better support network variations and to address potential security and privacy issues that may arise in edge network environments.
+
+   既要又要，能解决安全问题我都出另一篇论文了
+
+3. **The performance of the system under various network conditions (e.g., latency, packet loss, and congestion) has not been thoroughly explored, which may affect its applicability and reliability in real-world deployments.**
+
+   **确实，这个有用。那这样的话， 我的对比试验也要加上 latency, packet loss, 还好， 但congestion怎么说明呢**
+
+   
